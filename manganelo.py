@@ -149,7 +149,7 @@ for pageIndex in range(PAGE):
         pathFolderManga = os.path.join(workdiction, re.sub("[\\/:*?\"<>|]","",Title_Manga))
         if os.path.exists(pathFolderManga) == False:
             os.mkdir(pathFolderManga)
-
+        print(Link_Detail_Manga)
         requestMangaIndex = requests.get(Link_Detail_Manga)
         soupMangaIndex = BeautifulSoup(requestMangaIndex.text, 'html.parser')
 
@@ -169,6 +169,7 @@ for pageIndex in range(PAGE):
             
             requestChapterIndex = requests.get(ListLinkChapter[indexI])
             soupChapterIndex = BeautifulSoup(requestChapterIndex.text, 'html.parser')
+            print(ListLinkChapter[indexI])
             cnt = 1
             list_image_chapter_server_goc = []
             list_image_chapter_da_upload = []
@@ -179,6 +180,7 @@ for pageIndex in range(PAGE):
                 response = requests.get(linkImage)
                 with open( str(cnt) + ".jpg", "wb") as f:
                     f.write(response.content)
+                print(str(cnt))
                 cnt += 1
             list_image_chapter_server_goc = ','.join(list_image_chapter_server_goc)
             list_image_chapter_da_upload = ','.join(list_image_chapter_da_upload)
