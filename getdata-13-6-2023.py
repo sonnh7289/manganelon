@@ -2514,9 +2514,9 @@ def createcomment():
         thong_tin["so_thu_tu_su_kien"] = result_comment[0][10]
         ts = time.time()
         datetimenow = datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-        lenhquery = f"INSERT INTO comment(id_Comment,noi_dung_Comment,IP_Comment,device_Comment,id_toan_bo_su_kien,imageattach, thoi_gian_release) VALUES ( {idNext} ,%s,%s,%s, {id_toan_bo_su_kien} ,%s {datetimenow})"
-        print(idNext)
-        val = (noi_dung ,ipComment , device_cmt,imageattach)
+        lenhquery = f"INSERT INTO comment(id_Comment,noi_dung_Comment,IP_Comment,device_Comment,id_toan_bo_su_kien,imageattach, thoi_gian_release) VALUES ( {idNext} ,%s,%s,%s, {id_toan_bo_su_kien} ,%s , %s )"
+        print(lenhquery)
+        val = (noi_dung ,ipComment , device_cmt,imageattach,datetimenow)
         mycursor.execute(lenhquery, val)
         result1 = mycursor.fetchall()
         connection.commit()
@@ -2590,6 +2590,7 @@ def getPageLoveHistory(trang):
                 thong_tin["noi_dung_su_kien"] = saved_sukien[i][8]
                 thong_tin["id_toan_bo_su_kien"] = saved_sukien[i][9]
                 thong_tin["so_thu_tu_su_kien"] = saved_sukien[i][10]
+                
                 Mot_LanQuerryData.append(thong_tin)
                 thong_tin = {}
             list_toan_bo_sukien_saved.append(Mot_LanQuerryData)
@@ -2646,8 +2647,11 @@ def getPageCommentHistory(trang):
             list_thong_tin.append(thong_tin)
             thong_tin = {}
             #print(datetime.datetime.utcnow())
-
-
+        mycursor = connection.cursor()        
+        mycursor.execute(f"SELECT MAX(id_Comment) from comment")
+        result_id_sk = mycursor.fetchall()
+        tongsophantu = result_id_sk[0][0]
+        tongsotrang = tongsophantu / 50
 
         # Lưu các thay đổi vào database
         connection.commit()
@@ -2663,11 +2667,7 @@ def getPageCommentHistory(trang):
             cursor.close()
             connection.close()
             print("MySQL connection closed")
-            
-    mycursor.execute(f"SELECT MAX(id_Comment) from comment")
-    result_id_sk = mycursor.fetchall()
-    tongsophantu = result_id_sk[0][0]
-    tongsotrang = tongsophantu / 50
+    
     return {"comment":list_thong_tin,
             "sophantu" : tongsophantu,
             "sotrang": tongsotrang}
@@ -2705,6 +2705,7 @@ def getCommentHistory(id_toan_bo_su_kien):
             thong_tin["device_cmt"] = result2[i][3]
             thong_tin["id_comment"] = result2[i][0]
             thong_tin["imageattach"]= result2[i][5] 
+            thong_tin["thoi_gian_release"] = result2[i][6]
             list_thong_tin.append(thong_tin)
             thong_tin = {}
         # Lưu các thay đổi vào database
